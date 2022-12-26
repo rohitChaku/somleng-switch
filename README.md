@@ -16,6 +16,64 @@ This repository includes the following core features:
 
 In order to get the full Somleng stack up and running on your development machine, please follow the [GETTING STARTED](https://github.com/somleng/somleng-project/blob/master/docs/GETTING_STARTED.md) guide.
 
+## Local Deployment
+
+After installation, further changes can be made to underlying [adhearsion](https://github.com/adhearsion/adhearsion) library installed at `components/app/vendor/bundle/ruby/2.7.0/bundler/gems/adhearsion-7ae88e1bd865/lib/adhearsion`.
+
+Update the default initial property for Class `Call` - `call_handup` to `false` otherwise the call drops immediately (
+`components/app/vendor/bundle/ruby/2.7.0/bundler/gems/adhearsion-7ae88e1bd865/lib/adhearsion/call.rb`).
+
+### Docker
+Start the docker instance for ruby where the repo is cloned:
+```
+docker run --rm -w /app --net=host -v ${PWD}/components/app:/app -it ruby:2.7 bash
+```
+
+Setup the Instance for usage:
+```
+apt update
+apt install curl libpcre2-posix2 libpcre2-dev build-essential git postgresql nodejs vim screen iproute2 net-tools -y
+```
+
+Setup and launch the application:
+```
+bundle config --local deployment true
+bundle config --local path "vendor/bundle"
+bundle config --local without 'development test'
+bundle install --jobs 20 --retry 5
+yarn install --frozen-lockfile
+bundle exec rails assets:precompile
+mkdir -p tmp/pids
+
+# Start the application
+# Necessary config changes can be made in config/app_settings.yml
+bundle exec ahn start --no-console
+```
+
+### MacOS
+Preliminary installation:
+```
+brew install ruby@2.7 # Ruby 2.7
+brew install libpq # PostgreSQL Client
+brew install pcre
+```
+
+Setup and launch the application:
+```
+export CPATH="/opt/homebrew/include:/opt/homebrew/Cellar/libpq/15.1/include:$CPATH"
+export PATH="/opt/homebrew/opt/ruby@2.7/bin:/opt/homebrew/opt/libpq/bin:$PATH"
+bundle config --local deployment true
+bundle config --local path "vendor/bundle"
+bundle config --local without 'development test'
+bundle install --jobs 20 --retry 5
+bundle exec rails assets:precompile
+mkdir -p tmp/pids
+
+# Start the application
+# Necessary config changes can be made in config/app_settings.yml
+bundle exec ahn start --no-console
+```
+
 ## Deployment
 
 The [infrastructure directory](https://github.com/somleng/somleng-switch/tree/develop/infrastructure) contains [Terraform](https://www.terraform.io/) configuration files in order to deploy SomlengSWITCH to AWS.

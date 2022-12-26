@@ -40,12 +40,18 @@ class CallController < Adhearsion::CallController
   def build_call_properties
     return metadata[:call_properties] if metadata[:call_properties].present?
 
+    logger.info "Call Variables #{call.variables}"
+
+    # Updated variables because there are not available when initiating FS Call, but still fails at a later stage
     response = call_platform_client.create_call(
-      to: call.variables.fetch("variable_sip_h_x_somleng_callee_identity"),
-      from: call.variables.fetch("variable_sip_h_x_somleng_caller_identity"),
+      to: call.to,
+      from: call.from,
+      # to: call.variables.fetch("variable_sip_h_x_somleng_callee_identity"),
+      # from: call.variables.fetch("variable_sip_h_x_somleng_caller_identity"),
       external_id: call.id,
-      source_ip: call.variables["variable_sip_h_x_src_ip"] || call.variables["variable_sip_via_host"],
-      client_identifier: call.variables["variable_sip_h_x_somleng_client_identifier"],
+      # source_ip: call.variables["variable_sip_h_x_src_ip"] || call.variables["variable_sip_via_host"],
+      source_ip: "127.0.0.1",
+      # client_identifier: call.variables["variable_sip_h_x_somleng_client_identifier"],
       variables: {
         sip_from_host: call.variables["variable_sip_from_host"],
         sip_to_host: call.variables["variable_sip_to_host"],
