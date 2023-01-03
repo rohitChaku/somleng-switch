@@ -6,11 +6,13 @@ class OutboundCall
   end
 
   def initiate
+    logger.warn "Outbound Call Models Initiate"
     sip_headers = SIPHeaders.new(
       call_sid: call_params.fetch("sid"),
       account_sid: call_params.fetch("account_sid")
     )
 
+    byebug
     Adhearsion::OutboundCall.originate(
       DialString.new(call_params.fetch("routing_parameters")).to_s,
       from: call_params.fetch("from"),

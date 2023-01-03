@@ -74,6 +74,11 @@ mkdir -p tmp/pids
 bundle exec ahn start --no-console
 ```
 
+If `bundler` is to be installed:
+```
+gem install bundler --user-install
+```
+
 ## Deployment
 
 The [infrastructure directory](https://github.com/somleng/somleng-switch/tree/develop/infrastructure) contains [Terraform](https://www.terraform.io/) configuration files in order to deploy SomlengSWITCH to AWS.

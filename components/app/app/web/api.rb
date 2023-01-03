@@ -9,6 +9,7 @@ module SomlengAdhearsion
 
       post "/calls" do
         call_params = JSON.parse(request.body.read)
+        puts "API Calls Outbound Call #{call_params}"
         resource = OutboundCall.new(call_params).initiate
         json(id: resource.id)
       end
